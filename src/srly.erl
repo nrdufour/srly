@@ -45,7 +45,7 @@
         controlling_process/2
     ]).
 
--export([start_link/2]).
+-export([start_link/2, start_link/3]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
         terminate/2, code_change/3]).
 
@@ -90,11 +90,12 @@ controlling_process(Ref, Pid) when is_pid(Ref), is_pid(Pid) ->
     gen_server:call(Ref, {controlling_process, Pid}, infinity),
     flush_events(Ref, Pid).
 
-
 start_link(Dev, Opt) ->
     Pid = self(),
-    gen_server:start_link(?MODULE, [Pid, Dev, Opt], []).
+    start_link(Dev, Pid, Opt).
 
+start_link(Dev, ControllingPid, Opt) ->
+    gen_server:start_link(?MODULE, [ControllingPid, Dev, Opt], []).
 
 %%--------------------------------------------------------------------
 %%% Callbacks
